@@ -17,7 +17,7 @@ internal sealed class RequestHandlerWrapperImpl<TRequest, TResponse> : RequestHa
         RequestHandlerDelegate<TResponse> pipeline = token =>
         {
             var handler = serviceProvider.GetService(typeof(IRequestHandler<TRequest, TResponse>)) as IRequestHandler<TRequest, TResponse> ??
-                          throw new InvalidOperationException($"No handler registered for {typeof(TRequest).Name}");
+                          throw new InvalidOperationException($"No handler registered for {typeof(TRequest).FullName}");
 
             return handler.HandleAsync(typedRequest, token);
         };

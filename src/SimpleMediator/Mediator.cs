@@ -14,6 +14,8 @@ public class Mediator : IMediator
 
     public Task<TResponse> SendAsync<TResponse>(IRequest<TResponse> request, CancellationToken cancellationToken = default)
     {
+        ArgumentNullException.ThrowIfNull(request);
+
         var wrapper = WrapperCache<TResponse>.Wrappers.GetOrAdd(request.GetType(), static requestType =>
             (RequestHandlerWrapper<TResponse>)Activator.CreateInstance(
                 typeof(RequestHandlerWrapperImpl<,>).MakeGenericType(requestType, typeof(TResponse)))!);

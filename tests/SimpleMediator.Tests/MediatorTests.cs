@@ -37,9 +37,34 @@ public class MediatorTests
     }
 
     [Fact]
-    public async Task SendAsync_WithoutHandler_ThrowsInvalidOperationException()
+    public async Task SendAsync_WithoutHandler_ThrowsInvalidOperationExceptionWithRequestFullName()
     {
-        await Assert.ThrowsAsync<InvalidOperationException>(() => _mediator.SendAsync(new Ping()));
+        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => _mediator.SendAsync(new Ping()));
+
+        Assert.Contains(typeof(Ping).FullName!, exception.Message);
+    }
+
+    [Fact]
+    public async Task SendAsync_WithNullRequest_ThrowsArgumentNullException()
+    {
+        await Assert.ThrowsAsync<ArgumentNullException>(() => _mediator.SendAsync<string>(null!));
+    }
+
+    [Fact]
+    public async Task SendAsync_WithNullRequestWithoutResponse_ThrowsArgumentNullException()
+    {
+        await Assert.ThrowsAsync<ArgumentNullException>(() => _mediator.SendAsync((IRequest)null!));
+    }
+
+    [Fact]
+    public async Task SendAsync_WithHandlerForBaseRequestType_UsesItThroughContravariance()
+    {
+        IRequestHandler<Ping, string> handler = new AnyStringRequestHandler();
+        _serviceProvider.GetService(typeof(IRequestHandler<Ping, string>)).Returns(handler);
+
+        var response = await _mediator.SendAsync(new Ping());
+
+        Assert.Equal("Handled", response);
     }
 
     [Fact]
@@ -189,4 +214,9 @@ public class CommandHandler : IRequestHandler<Command>
         request.Handled = true;
         return Task.CompletedTask;
     }
+}
+
+public class AnyStringRequestHandler : IRequestHandler<IRequest<string>, string>
+{
+    public Task<string> HandleAsync(IRequest<string> request, CancellationToken cancellationToken = default) => Task.FromResult("Handled");
 }
