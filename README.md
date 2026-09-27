@@ -180,13 +180,49 @@ services.AddTransient<IPipelineBehavior<GetGreeting, string>, GreetingBehavior>(
 - `src/SimpleMediator.Sample` is a console application that shows the features above: requests with and without a response, and logging, timeout and validation behaviors. Run it with `dotnet run --project src/SimpleMediator.Sample`.
 - `tests/SimpleMediator.Tests` contains the unit tests (xUnit and NSubstitute). Run them with `dotnet test`.
 
-## Publishing
+## Contributing
 
-Pushing to GitHub Packages requires a personal access token (classic) with the `write:packages` scope.
+- **Commits:** every commit must follow [Conventional Commits](https://www.conventionalcommits.org/) (`feat: ...`, `fix: ...`, `docs: ...`). The `commitlint` check validates them on pull requests and pushes to `main`.
+- **Pull requests:** PR titles are free text and are not used for versioning. Merge with a merge commit or rebase, not squash: a squash commit takes the PR title as its message, so its changes would not be versioned.
 
-```shell
-dotnet pack src/SimpleMediator -c Release
-dotnet nuget push src/SimpleMediator/bin/Release/SimpleMediator.<VERSION>.nupkg --source github-ncobianm --api-key <TOKEN>
+## Development workflow
+
+```mermaid
+flowchart TD
+    A["Create a branch from main"] --> B["Commit using Conventional Commits"]
+    B --> C["Push and open a pull request to main"]
+    C --> D{"CI: commitlint, build and tests"}
+    D -- fails --> B
+    D -- passes --> E["Merge the pull request<br/>(merge commit or rebase, no squash)"]
+    E --> F["Release workflow: release-please creates or updates<br/>the release pull request (only for feat, fix or breaking changes)"]
+    F --> G{"Release now?"}
+    G -- "no, keep adding changes" --> A
+    G -- yes --> H["Merge the release pull request"]
+    H --> I["Tag vX.Y.Z and GitHub release with the changelog"]
+    I --> J["Publish job: tests, pack, push to GitHub Packages<br/>and attach the .nupkg to the release"]
 ```
 
-Update `<Version>` in `src/SimpleMediator/SimpleMediator.csproj` before packing a new version.
+1. **Develop:** create a branch from `main` and commit using Conventional Commits. The commit types decide the next version.
+2. **Pull request:** open a pull request to `main`. The CI workflow validates the commit messages, builds and runs the tests.
+3. **Merge:** merge the pull request with a merge commit or rebase, not squash.
+4. **Release pull request:** on every push to `main`, release-please creates or updates a release pull request. It accumulates the changes of all the merged pull requests: the next version, the `CHANGELOG.md` entry and the `<Version>` of the project.
+5. **Release:** when you want to release, merge the release pull request. This creates the `vX.Y.Z` tag and the GitHub release.
+6. **Publish:** the release workflow runs the tests again, packs the library, publishes it to GitHub Packages and attaches the `.nupkg` to the release.
+
+## Releasing
+
+Versions follow SemVer (`X.Y.Z`) and are calculated from the commits by [release-please](https://github.com/googleapis/release-please):
+
+| Commit | Version bump |
+|---|---|
+| `fix:` | Patch (`1.0.0` → `1.0.1`) |
+| `feat:` | Minor (`1.0.0` → `1.1.0`) |
+| `feat!:`, `fix!:` or a `BREAKING CHANGE:` footer | Major (`1.0.0` → `2.0.0`) |
+
+Other types (`docs:`, `refactor:`, `test:`, `chore:`...) don't trigger a release.
+
+1. Each push to `main` creates or updates a release pull request with the next version, the `CHANGELOG.md` entry and the `<Version>` in `src/SimpleMediator/SimpleMediator.csproj`.
+2. Merging that pull request creates the `vX.Y.Z` tag and the GitHub release.
+3. The release workflow then runs the tests, packs the library, publishes it to GitHub Packages and attaches the `.nupkg` to the release.
+
+The workflows are in `.github/workflows`: `ci.yml` (commitlint, build and tests) and `release.yml` (release PR, release and publishing).

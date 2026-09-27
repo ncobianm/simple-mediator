@@ -1,0 +1,31 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+  pull-requests: read
+
+jobs:
+  commitlint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+      # Uses @commitlint/config-conventional (see commitlint.config.mjs)
+      - uses: wagoid/commitlint-github-action@v6
+
+  build-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-dotnet@v6
+        with:
+          dotnet-version: 10.0.x
+      - run: dotnet restore SimpleMediator.slnx
+      - run: dotnet build SimpleMediator.slnx --no-restore -c Release
+      - run: dotnet test SimpleMediator.slnx --no-build -c Release

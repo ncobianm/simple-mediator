@@ -8,7 +8,7 @@
 
     <PropertyGroup>
         <PackageId>SimpleMediator</PackageId>
-        <Version>1.0.0</Version>
+        <Version>1.0.0</Version> <!-- x-release-please-version -->
         <Authors>ncobianm</Authors>
         <Description>A simple mediator pattern library</Description>
         <RepositoryUrl>https://github.com/ncobianm/simple-mediator</RepositoryUrl>
