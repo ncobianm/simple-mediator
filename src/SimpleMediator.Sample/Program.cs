@@ -1,5 +1,4 @@
-using Microsoft.Extensions.DependencyInjection;
-using SimpleMediator;
+﻿using Microsoft.Extensions.DependencyInjection;
 using SimpleMediator.Interfaces;
 using SimpleMediator.Sample.Behaviors;
 using SimpleMediator.Sample.Features;
@@ -7,21 +6,15 @@ using SimpleMediator.Sample.Validation;
 
 var services = new ServiceCollection();
 
-// Mediator
-services.AddTransient<IMediator, Mediator>();
+// Mediator, handlers found in this assembly and pipeline behaviors (first added = outermost)
+services.AddSimpleMediator(cfg => cfg
+    .RegisterServicesFromAssemblyContaining<Program>()
+    .AddOpenBehavior(typeof(LoggingBehavior<,>))
+    .AddOpenBehavior(typeof(TimeoutBehavior<,>))
+    .AddOpenBehavior(typeof(ValidationBehavior<,>)));
 
-// Handlers
-services.AddTransient<IRequestHandler<GetGreeting, string>, GetGreetingHandler>();
-services.AddTransient<IRequestHandler<CreateUser, Guid>, CreateUserHandler>();
-services.AddTransient<IRequestHandler<SlowOperation, string>, SlowOperationHandler>();
-
-// Validators
+// Validators used by the ValidationBehavior
 services.AddTransient<IValidator<CreateUser>, CreateUserValidator>();
-
-// Pipeline behaviors (first registered = outermost)
-services.AddTransient(typeof(IPipelineBehavior<,>), typeof(LoggingBehavior<,>));
-services.AddTransient(typeof(IPipelineBehavior<,>), typeof(TimeoutBehavior<,>));
-services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
 
 await using var provider = services.BuildServiceProvider();
 var mediator = provider.GetRequiredService<IMediator>();
