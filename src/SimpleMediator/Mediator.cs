@@ -21,6 +21,11 @@ public class Mediator : IMediator
         return wrapper.HandleAsync(request, _serviceProvider, cancellationToken);
     }
 
+    public Task SendAsync(IRequest request, CancellationToken cancellationToken = default)
+    {
+        return SendAsync<Unit>(request, cancellationToken);
+    }
+
     // One cache per response type, keyed by request type. Reflection only runs the first time a request type is sent.
     private static class WrapperCache<TResponse>
     {

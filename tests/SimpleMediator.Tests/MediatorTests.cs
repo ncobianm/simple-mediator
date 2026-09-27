@@ -133,6 +133,17 @@ public class MediatorTests
         Assert.IsType<InvalidOperationException>(observed);
     }
 
+    [Fact]
+    public async Task SendAsync_WithRequestWithoutResponse_InvokesHandler()
+    {
+        _serviceProvider.GetService(typeof(IRequestHandler<Command, Unit>)).Returns(new CommandHandler());
+        var command = new Command();
+
+        await _mediator.SendAsync(command);
+
+        Assert.True(command.Handled);
+    }
+
     private void RegisterHandler()
     {
         _serviceProvider.GetService(typeof(IRequestHandler<Ping, string>)).Returns(_handler);
@@ -165,3 +176,17 @@ public class MediatorTests
 }
 
 public record Ping : IRequest<string>;
+
+public class Command : IRequest
+{
+    public bool Handled { get; set; }
+}
+
+public class CommandHandler : IRequestHandler<Command>
+{
+    public Task HandleAsync(Command request, CancellationToken cancellationToken = default)
+    {
+        request.Handled = true;
+        return Task.CompletedTask;
+    }
+}

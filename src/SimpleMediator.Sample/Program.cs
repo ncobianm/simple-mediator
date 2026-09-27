@@ -27,7 +27,10 @@ Console.WriteLine(greeting);
 var userId = await mediator.SendAsync(new CreateUser("user@example.com"));
 Console.WriteLine($"User created: {userId}");
 
-// 3. Invalid request is stopped by the validation behavior
+// 3. Request without response (IRequest), behaviors also apply to it
+await mediator.SendAsync(new DeleteUser(userId));
+
+// 4. Invalid request is stopped by the validation behavior
 try
 {
     await mediator.SendAsync(new CreateUser("invalid-email"));
@@ -37,7 +40,7 @@ catch (ValidationException ex)
     Console.WriteLine($"Validation failed: {ex.Message}");
 }
 
-// 4. The timeout behavior passes its own token to the rest of the pipeline and cancels slow handlers
+// 5. The timeout behavior passes its own token to the rest of the pipeline and cancels slow handlers
 try
 {
     await mediator.SendAsync(new SlowOperation(TimeSpan.FromSeconds(5)));

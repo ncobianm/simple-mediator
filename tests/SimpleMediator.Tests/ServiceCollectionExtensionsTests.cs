@@ -18,6 +18,32 @@ public class ServiceCollectionExtensionsTests
     }
 
     [Fact]
+    public async Task AddSimpleMediator_RegistersHandlersForRequestsWithoutResponse()
+    {
+        _services.AddSimpleMediator(cfg => cfg.RegisterServicesFromAssemblyContaining<CommandHandler>());
+        using var provider = _services.BuildServiceProvider();
+        var command = new Command();
+
+        await provider.GetRequiredService<IMediator>().SendAsync(command);
+
+        Assert.True(command.Handled);
+    }
+
+    [Fact]
+    public async Task AddOpenBehavior_AppliesToRequestsWithoutResponse()
+    {
+        _services.AddSimpleMediator(cfg => cfg
+            .RegisterServicesFromAssemblyContaining<CommandHandler>()
+            .AddOpenBehavior(typeof(ShortCircuitBehavior<,>)));
+        using var provider = _services.BuildServiceProvider();
+        var command = new Command();
+
+        await provider.GetRequiredService<IMediator>().SendAsync(command);
+
+        Assert.False(command.Handled);
+    }
+
+    [Fact]
     public void AddSimpleMediator_SameAssemblyTwice_RegistersHandlerOnce()
     {
         _services.AddSimpleMediator(cfg => cfg
@@ -85,4 +111,10 @@ public class FirstBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, TR
 public class SecondBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse> where TRequest : IRequest<TResponse>
 {
     public Task<TResponse> HandleAsync(TRequest request, RequestHandlerDelegate<TResponse> next, CancellationToken cancellationToken = default) => next();
+}
+
+public class ShortCircuitBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse> where TRequest : IRequest<TResponse>
+{
+    public Task<TResponse> HandleAsync(TRequest request, RequestHandlerDelegate<TResponse> next, CancellationToken cancellationToken = default) =>
+        Task.FromResult(default(TResponse)!);
 }
