@@ -25,8 +25,10 @@ On Linux and macOS, also add `--store-password-in-clear-text`, because encrypted
 Then add the package:
 
 ```shell
-dotnet add package SimpleMediator
+dotnet add package Ncobianm.SimpleMediator
 ```
+
+Don't install the `SimpleMediator` package from nuget.org: it is an unrelated library.
 
 ## Getting started
 
