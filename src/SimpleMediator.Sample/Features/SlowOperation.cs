@@ -1,5 +1,3 @@
-using SimpleMediator.Interfaces;
-
 namespace SimpleMediator.Sample.Features;
 
 public record SlowOperation(TimeSpan Duration) : IRequest<string>;

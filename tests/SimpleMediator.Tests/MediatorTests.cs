@@ -1,5 +1,4 @@
 using NSubstitute;
-using SimpleMediator.Interfaces;
 
 namespace SimpleMediator.Tests;
 

@@ -1,4 +1,3 @@
-using SimpleMediator.Interfaces;
 using SimpleMediator.Sample.Validation;
 
 namespace SimpleMediator.Sample.Behaviors;

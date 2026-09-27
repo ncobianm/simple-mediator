@@ -1,5 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using SimpleMediator.Interfaces;
+using SimpleMediator;
 using SimpleMediator.Sample.Behaviors;
 using SimpleMediator.Sample.Features;
 using SimpleMediator.Sample.Validation;

@@ -1,5 +1,3 @@
-using SimpleMediator.Interfaces;
-
 namespace SimpleMediator.Sample.Features;
 
 public record GetGreeting(string Name) : IRequest<string>;

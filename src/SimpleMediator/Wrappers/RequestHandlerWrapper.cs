@@ -1,5 +1,3 @@
-using SimpleMediator.Interfaces;
-
 namespace SimpleMediator.Wrappers;
 
 internal abstract class RequestHandlerWrapper<TResponse>

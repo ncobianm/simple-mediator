@@ -1,4 +1,4 @@
-namespace SimpleMediator.Interfaces;
+namespace SimpleMediator;
 
 public interface IPipelineBehavior<in TRequest, TResponse> where TRequest : IRequest<TResponse>
 {

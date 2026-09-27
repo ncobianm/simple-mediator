@@ -1,5 +1,4 @@
 using Microsoft.Extensions.DependencyInjection;
-using SimpleMediator.Interfaces;
 
 namespace SimpleMediator.Tests;
 

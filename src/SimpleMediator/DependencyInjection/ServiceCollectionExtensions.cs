@@ -1,7 +1,5 @@
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using SimpleMediator;
-using SimpleMediator.DependencyInjection;
-using SimpleMediator.Interfaces;
 
 // Same namespace as IServiceCollection so the extension is available without extra usings
 namespace Microsoft.Extensions.DependencyInjection;

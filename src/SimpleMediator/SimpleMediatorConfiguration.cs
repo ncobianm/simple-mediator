@@ -1,8 +1,7 @@
 using System.Reflection;
 using Microsoft.Extensions.DependencyInjection;
-using SimpleMediator.Interfaces;
 
-namespace SimpleMediator.DependencyInjection;
+namespace SimpleMediator;
 
 public class SimpleMediatorConfiguration
 {

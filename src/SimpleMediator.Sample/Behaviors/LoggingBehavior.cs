@@ -1,5 +1,3 @@
-using SimpleMediator.Interfaces;
-
 namespace SimpleMediator.Sample.Behaviors;
 
 public class LoggingBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse> where TRequest : IRequest<TResponse>

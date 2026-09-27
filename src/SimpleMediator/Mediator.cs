@@ -1,5 +1,4 @@
 using System.Collections.Concurrent;
-using SimpleMediator.Interfaces;
 using SimpleMediator.Wrappers;
 
 namespace SimpleMediator;

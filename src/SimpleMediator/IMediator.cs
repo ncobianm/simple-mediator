@@ -1,4 +1,4 @@
-namespace SimpleMediator.Interfaces;
+namespace SimpleMediator;
 
 public interface IMediator
 {
