@@ -1,3 +1,9 @@
 <Solution>
-  <Project Path="src/SimpleMediator/SimpleMediator.csproj" />
+  <Folder Name="/src/">
+    <Project Path="src/SimpleMediator/SimpleMediator.csproj" />
+    <Project Path="src/SimpleMediator.Sample/SimpleMediator.Sample.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/SimpleMediator.Tests/SimpleMediator.Tests.csproj" />
+  </Folder>
 </Solution>
